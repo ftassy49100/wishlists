@@ -4,9 +4,9 @@ from rest_framework import routers
 
 
 router = routers.SimpleRouter()
-router.register('wishlist', views.WishlistViewSet, basename='wishlist')
-router.register('user', views.UserViewSet, basename='user')
-router.register('idea', views.IdeaViewSet, basename='idea')
+router.register('wishlist', views.AdminWishlistViewSet, basename='wishlist')
+router.register('user', views.AdminUserViewSet, basename='user')
+router.register('idea', views.AdminIdeaViewSet, basename='idea')
 
 app_name = 'lists'
 urlpatterns = [ #urls de mon application lists,

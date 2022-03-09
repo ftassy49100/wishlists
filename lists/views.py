@@ -1,7 +1,7 @@
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404
 from .models import *
+from .permissions import *
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse, reverse_lazy
 from django.views import generic
@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from . import serializers
 from django.db import transaction
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
 
 # Create your views here.
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -195,8 +196,9 @@ class VoteView(LoginRequiredMixin, generic.DetailView):
 
 ############################################################## REST API ##############################################
 
-class WishlistViewSet(ModelViewSet):
-    serializer_class = serializers.WishlistDetailSerializer
+class AdminWishlistViewSet(ModelViewSet):
+    serializer_class = serializers.WishlistAdminSerializer
+    permission_classes = [IsAdminAuthenticated]
 
     def get_queryset(self):
         queryset = Wishlist.objects.all()
@@ -209,8 +211,8 @@ class WishlistViewSet(ModelViewSet):
         return queryset
         
 
-class IdeaViewSet(ModelViewSet):
-    serializer_class = serializers.IdeaDetailSerializer
+class AdminIdeaViewSet(ModelViewSet):
+    serializer_class = serializers.IdeaAdminSerializer
 
     def get_queryset(self):
         return Idea.objects.all()
@@ -231,8 +233,8 @@ class IdeaViewSet(ModelViewSet):
         return Response()
 
 
-class UserViewSet(ModelViewSet):
-    serializer_class = serializers.UserDetailSerializer
+class AdminUserViewSet(ModelViewSet):
+    serializer_class = serializers.UserAdminSerializer
 
     def get_queryset(self):
         return User.objects.all()
