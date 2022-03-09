@@ -1,0 +1,42 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'lists/style.css' %}">
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mes Super Wishlists</title>
+    </head>
+    <body>
+        <header class="page-header">
+            <nav>
+                <ul>
+                    <li><a href="{% url 'lists:index' %}">Les listes</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'lists:wishlist-add' %}">Créer une liste</a></li>
+                    <li class="logout"><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'password_change' %}">Change password</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+        <main class="container">
+            <div class="messages">
+                {% if messages %}
+                <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col">
+                {% block content %}
+                {% endblock %}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ vote.id }}</h1>
+
+Vote numéro {{ vote.id }} concernant l'idée {{ vote.idea.name }} :
+    {% if vote.good_idea %}
+        c'est une bonne idée !
+    {% else %}
+        c'est pas terrible ...
+    {% endif %}
+
+{% endblock %}

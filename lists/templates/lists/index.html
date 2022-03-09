@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>l'application de wishlist de la morkitu</h1>
+Bienvenue, {{ user.username|default:'Guest'}} !
+Déjà {{ num_visits }} visiteurs !
+
+{% if user.is_authenticated %}
+    {% if latest_lists %}
+        <ul>
+        {% for list in latest_lists %}
+            <li><a href="{% url 'lists:wishlist-update' list.id %}">{{ list.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Pas encore de listes disponibles !</p>
+    {% endif %}
+{% else %}
+<p>Connectez-vous pour accéder aux listes.</p>
+{% endif %}
+{% endblock %}

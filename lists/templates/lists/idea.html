@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if idea %}
+    <h1>{{ idea.name }}</h1>
+    {% if idea.image_url %}
+        <img src="{{ idea.image_url}}"" alt ="{{idea.name}}">
+    {% endif %}
+
+    {% if can_vote %}
+    <form action="{% url 'lists:vote' idea.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>What do you think about this idea ?</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <input type="radio" name="choice" id="1" value="True">
+            <label for=1>Good idea!</label><br>
+            <input type="radio" name="choice" id="2" value="False">
+            <label for=1>Not that great...</label><br>
+    </fieldset>
+    <input type="submit" value="Vote">
+    </form>
+    {% else %}
+        <p>Vous ne pouvez pas voter pour cette idée.</p>
+    {% endif %}
+
+{% endif %}
+{% if can_delete %}
+<form method="post" action="/idea/{{idea.id}}/delete">{% csrf_token %}
+    <input type="submit" value="Delete this idea">
+</form>
+{% endif %}
+{% endblock %}

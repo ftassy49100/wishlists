@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+    {% block content %}
+        <h1>Voter pour l'idée <a href="{% url 'lists:idea-update' pk=idea.id %}">{{ idea.name }}</a></h1>
+        <img src="{{ idea.image_url }}">
+        <form action="{% url 'lists:vote-add' idea_id=idea.id%}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Voter">
+        </form>
+    {% endblock %}
+

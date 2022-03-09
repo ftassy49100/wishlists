@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user == form.instance.creator or user.is_staff %}
+    <h1>{{ form.instance.name }}</h1>
+    <form action="{% url 'lists:wishlist-update' pk=form.instance.id%}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Modifier">
+    </form>
+
+    <form action="{% url 'lists:wishlist-delete' pk=form.instance.id%}" method="post">
+        {% csrf_token %}
+        <input type=submit value="Supprimer la liste">
+    </form>
+
+    {% else %}
+    <h1>{{ form.instance.name }}</h1>
+    {% endif %}
+    <ul>
+    {% for idea in form.instance.idea_set.all %}
+        {% if user == idea.creator or user in form.instance.contributors.all and user != form.instance.creator %}
+            <li><a href="{% url 'lists:idea-update' idea.id %}">{{ idea.name }}</a></li>
+            {% if idea.creator == user or user.is_staff %}
+                <form action="{% url 'lists:idea-delete' pk=idea.id%}" method="post">
+                    {% csrf_token %}
+                    <input type=submit value="Supprimer l'idée">
+                </form>
+            {% endif %}
+        {% endif %}
+    {% empty %}
+        <li>Pas encore d'idée ! Cliquez ci-dessous pour en rajouter.</li>
+    {% endfor %}
+    </ul>
+
+    <div><a href="{% url 'lists:idea-add' wishlist_id=form.instance.id%}">Ajouter une idée</a></div>
+{% endblock %}

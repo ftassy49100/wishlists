@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Nouvelle liste</h1>
+    <form action="{% url 'lists:wishlist-add' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="ajouter une wishlist">
+    </form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ wishlist.name }}</h1>
+<ul>
+{% for idea in wishlist.idea_set.all %}
+    <li><a href="{% url 'lists:idea' idea.id %}">{{ idea.name }}</a></li> blablabli
+    {% if idea.creator == user or user.is_staff %}
+        <form action="{% url 'lists:idea-delete' pk=idea.id%}" method="post">
+            {% csrf_token %}
+            <input type=submit value="Supprimer">
+        </form>
+    {% endif %}
+{% empty %}
+    <li>Pas encore d'idée ! Cliquez ci-dessous pour en rajouter.</li>
+{% endfor %}
+</ul>
+
+<div><a href="{% url 'lists:idea-add' wishlist_id=form.instance.id%}">Ajouter une idée</a></div>
+{% endblock %}
