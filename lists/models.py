@@ -36,7 +36,7 @@ class Idea(models.Model):
     name = models.CharField(max_length=200)
     image_url = models.CharField(max_length=2000)
     price = models.FloatField()
-    status = models.IntegerField(default=0)  # 0 = stockée, 1 = réservée, 2 = achetée, 3= annulée
+    status = models.IntegerField(default=0)  # 0 = nouvelle idée, 1 = réservée, 2 = achetée, 3 = offerte, -1 = annulée
     wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
     creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     booked_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='booked_by')
@@ -70,6 +70,23 @@ class Idea(models.Model):
         if self.booked_by is not None and len(self.wishlist.contributors.filter(id=user.id)) > 0 or not user.is_staff:
             raise PermissionDenied("Vous n'êtes pas autorisé à réserver cette idée")
         self.booked_by = user
+        self.status = 1
+        self.save()
+        return self
+
+    @transaction.atomic
+    def buy(self, user):
+        if not user == self.booked_by:
+            raise PermissionDenied("Cette idée est déjà réservée par un autre contributeur !")
+        self.status = 2
+        self.save()
+        return self
+    
+    @transaction.atomic
+    def cancel(self, user):
+        if not self.can_update(user):
+            raise PermissionDenied("Vous n'êtes pas autorisé à annuler cette idée.")
+        self.status = -1
         self.save()
         return self
 

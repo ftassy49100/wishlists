@@ -228,15 +228,20 @@ class AdminIdeaViewSet(ModelViewSet):
     def vote(self, request, pk, *args, **kwargs):
         idea = self.get_object()
         if idea.can_vote(request.user) and request.data['good_idea'] is not None:
-            votes = Vote.objects.filter(idea=idea, voter=request.user)
-            if len(votes) == 0:
-                vote = Vote(idea=idea, good_idea=request.data['good_idea'], voter=request.user)
-            else:
-                vote = votes[0]
-                vote.good_idea=request.data['good_idea']
+            vote = Vote.objects.get_or_create(idea=idea, voter=request.user, good_idea=request.data['good_idea'])
             print(vote)
             vote.save()
         return Response()
+
+    @action(detail=True, methods=['POST'])
+    def cancel(self, request, pk, *args, **kwargs):
+        idea = self.get_object()
+        idea.cancel(request.user)
+
+    @action(detail=True, methods=['POST'])
+    def buy(self, request, pk, *args, **kwargs):
+        idea = self.get_object()
+        idea.buy(request.user)
 
 
 class AdminUserViewSet(ModelViewSet):
