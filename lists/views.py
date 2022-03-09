@@ -213,22 +213,28 @@ class AdminWishlistViewSet(ModelViewSet):
 
 class AdminIdeaViewSet(ModelViewSet):
     serializer_class = serializers.IdeaAdminSerializer
+    permission_classes = [IsAdminAuthenticated]
 
     def get_queryset(self):
         return Idea.objects.all()
 
-    @action(detail=True, methods=['post', 'get'])
+    @action(detail=True, methods=['post'])
     def book(self, request, pk):
         if request.user.is_authenticated:
             self.get_object().book(request.user)
         return Response()
 
-    @action(detail=True, methods=['POST', 'get'])
-    def upvote(self, request, pk):
+    @action(detail=True, methods=['POST'])
+    def vote(self, request, pk, *args, **kwargs):
         idea = self.get_object()
-        if idea.can_vote(request.user):
-            print("can vote")
-            vote = Vote(idea=idea, good_idea=True, voter=request.user)
+        if idea.can_vote(request.user) and request.data['good_idea'] is not None:
+            votes = Vote.objects.filter(idea=idea, voter=request.user)
+            if len(votes) == 0:
+                vote = Vote(idea=idea, good_idea=request.data['good_idea'], voter=request.user)
+            else:
+                vote = votes[0]
+                vote.good_idea=request.data['good_idea']
+            print(vote)
             vote.save()
         return Response()
 

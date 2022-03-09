@@ -46,8 +46,7 @@ class Idea(models.Model):
 
     def can_vote(self, voter):
         if self.status < 2:
-            return (len(self.vote_set.filter(idea=self, voter=voter)) == 0 and (
-                        self.wishlist.creator != voter or len(self.wishlist.contributors.filter(id=voter.id)) > 0))
+            return len(self.wishlist.contributors.filter(id=voter.id)) > 0  and voter != self.wishlist.creator or voter.is_staff
         return False
 
     def can_update(self, user):

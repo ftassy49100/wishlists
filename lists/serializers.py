@@ -19,4 +19,4 @@ class WishlistAdminSerializer(serializers.HyperlinkedModelSerializer):
     idea_set = IdeaAdminSerializer(many=True)
     class Meta:
         model = Wishlist
-        fields = ['id', 'name', 'creation_date', 'creator', 'contributors', 'idea_set', 'is_active']   
+        fields = ['id', 'name', 'creation_date', 'creator', 'contributors', 'idea_set', 'is_active']
