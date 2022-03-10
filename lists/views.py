@@ -15,9 +15,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from . import serializers
-from django.db import transaction
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework import status
 
 # Create your views here.
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -243,9 +243,18 @@ class AdminIdeaViewSet(ModelViewSet):
         idea = self.get_object()
         idea.buy(request.user)
 
-
 class AdminUserViewSet(ModelViewSet):
     serializer_class = serializers.UserAdminSerializer
+    queryset = User.objects.all()
+        
+class UserCreate(APIView):
+    """ 
+    Creates the user. 
+    """
 
-    def get_queryset(self):
-        return User.objects.all()
+    def post(self, request, format='json'):
+        serializer = UserAdminSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -21,7 +21,8 @@ urlpatterns = [ #urls de mon application lists,
     path('vote/<int:pk>/', views.VoteUpdateView.as_view(), name='vote-update'),
     path('vote/<int:pk>/delete/', views.VoteDeleteView.as_view(), name='vote-delete'),
     path('vote/<int:pk>/results', views.VoteView.as_view(), name='view_vote'),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('/api/users/', views.UserCreate.as_view(), name='account-create')
 
     #path(route='la route', view'la view.as_view()', kwargs='les arguments get', name='nom de la view')
 ]
